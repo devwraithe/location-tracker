@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_tracker/app/modules/current_location/presentation/cubits/cubit.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/screens/current_location_screen.dart';
+import 'package:location_tracker/app/shared/services/di_service.dart';
 
 class LocationTracker extends StatelessWidget {
   const LocationTracker({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Location Tracker',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.pinkAccent,
-        ),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => sl<LocationCubit>()),
+      ],
+      child: const MaterialApp(
+        title: 'Location Tracker',
+        debugShowCheckedModeBanner: false,
+        home: CurrentLocationScreen(),
       ),
-      home: const CurrentLocationScreen(),
     );
   }
 }
