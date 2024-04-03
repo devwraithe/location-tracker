@@ -1,17 +1,16 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:location_tracker/app/shared/helpers/snack_helper.dart';
 import 'package:location_tracker/app/shared/utilities/constants.dart';
 
 abstract class LocationService {
-  Future<Position> getCurrentLocation(BuildContext context);
+  Future<LocationPermission> locationPermissions();
+  Future<Position> getCurrentLocation();
 }
 
 class LocationServiceImpl implements LocationService {
   @override
-  Future<Position> getCurrentLocation(BuildContext context) async {
+  Future<LocationPermission> locationPermissions() async {
     bool locationServiceEnabled;
     LocationPermission permission;
 
@@ -19,7 +18,25 @@ class LocationServiceImpl implements LocationService {
       locationServiceEnabled = await Geolocator.isLocationServiceEnabled();
 
       if (!locationServiceEnabled) {
-        SnackHelper.error(context, Constants.permissionsDisabled);
+        throw Exception("Location services are not enabled");
+      } else {
+        permission = await Geolocator.checkPermission();
+        return permission;
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<Position> getCurrentLocation() async {
+    bool locationServiceEnabled;
+    LocationPermission permission;
+
+    try {
+      locationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+      if (!locationServiceEnabled) {
         return Future.error(Constants.permissionsDisabled);
       }
 
@@ -29,17 +46,14 @@ class LocationServiceImpl implements LocationService {
         permission = await Geolocator.requestPermission();
 
         if (permission == LocationPermission.denied) {
-          SnackHelper.error(context, Constants.permissionsDenied);
           return Future.error(Constants.permissionsDenied);
         }
       }
 
       if (permission == LocationPermission.deniedForever) {
-        SnackHelper.error(context, Constants.permissionsDeniedPermanently);
         return Future.error(Constants.permissionsDeniedPermanently);
       }
 
-      SnackHelper.success(context, Constants.permissionsGranted);
       return await Geolocator.getCurrentPosition();
     } catch (e) {
       throw Exception(e.toString());

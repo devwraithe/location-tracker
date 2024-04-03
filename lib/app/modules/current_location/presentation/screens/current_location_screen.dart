@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location_tracker/app/modules/current_location/presentation/cubits/cubit.dart';
+import 'package:location_tracker/app/modules/current_location/presentation/cubits/state.dart';
 import 'package:location_tracker/app/shared/services/location_service.dart';
 
 class CurrentLocationScreen extends StatefulWidget {
@@ -18,12 +21,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
   @override
   void initState() {
     super.initState();
-    _getCurrentPosition();
-  }
-
-  void _getCurrentPosition() async {
-    _currentPosition = await locationService.getCurrentLocation(context);
-    debugPrint("Current position - $_currentPosition");
+    BlocProvider.of<LocationCubit>(context).getLocation();
   }
 
   @override
@@ -35,10 +33,20 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Center(
-              child: Text(
-                "Current location coordinates:\n$_currentPosition",
-              ),
-            ),
+              child:
+            BlocBuilder<LocationCubit, LocationState>(
+              builder: (context, state) {
+                if (state is LocationLoading) {
+                  return const CircularProgressIndicator();
+                } else if (state is LocationError) {
+                  return Text(state.message);
+                } else if (state is LocationLoaded) {
+                  return Text(state.result.toString());
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),),
           ],
         ),
       ),
