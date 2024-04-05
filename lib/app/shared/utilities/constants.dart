@@ -9,6 +9,11 @@ class Constants {
   static const String permissionsDeniedPermanently =
       "Location permissions are permanently denied";
 
+  // Doubles
+  static const double initLat = 43.6532;
+  static const double initLon = -79.3832;
+  static const double zoom = 6.0;
+
   // Maps
   static final headers = {
     'Content-Type': 'application/json; charset=UTF-8',
