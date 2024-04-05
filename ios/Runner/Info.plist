@@ -49,5 +49,7 @@
     <string>This application needs access to your location to provide location-based services.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>This application needs continuous access to your location to provide location-based services.</string>
+    <key>MAPS_API_KEY</key>
+    <string>${MAPS_API_KEY}</string>
 </dict>
 </plist>
