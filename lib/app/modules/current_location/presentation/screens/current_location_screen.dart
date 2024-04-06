@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,52 +38,94 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        top: false,
-        child: BlocConsumer<LocationCubit, LocationState>(
-          listener: (context, state) {
-            if (state is LocationLoaded) {
-              final result = state.result;
-              _location = LatLng(
-                result.latitude,
-                result.longitude,
-              );
-              _updateCameraPosition();
-            }
-          },
-          builder: (context, state) {
-            if (state is LocationLoading) {
-              return const MapLoader();
-            } else if (state is LocationError) {
-              return Text(state.message);
-            } else if (state is LocationLoaded) {
-              return Column(
-                children: [
-                  Expanded(
-                    child: GoogleMap(
-                      onMapCreated: (controller) async {
-                        setState(() => _mapController = controller);
-                      },
-                      initialCameraPosition: CameraPosition(
-                        target: _location,
-                        zoom: Constants.zoom,
-                      ),
-                      zoomControlsEnabled: false,
-                      myLocationButtonEnabled: false,
-                      markers: _createMarkers(),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(state.result.toString()),
-                  FilledButton(
-                    onPressed: () => getLocation(),
-                    child: const Text("Refresh"),
-                  ),
-                ],
-              );
-            } else {
-              return const SizedBox();
-            }
-          },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+          child: Column(
+            children: [
+              const Text(
+                "Find your location!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Expanded(
+                child: BlocConsumer<LocationCubit, LocationState>(
+                  listener: (context, state) {
+                    if (state is LocationLoaded) {
+                      final result = state.result;
+                      _location = LatLng(
+                        result.latitude,
+                        result.longitude,
+                      );
+                      _updateCameraPosition();
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is LocationLoading) {
+                      return const MapLoader();
+                    } else {
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                Constants.mapRadius,
+                              ),
+                              child: GoogleMap(
+                                onMapCreated: (controller) async {
+                                  setState(() => _mapController = controller);
+                                },
+                                initialCameraPosition: CameraPosition(
+                                  target: _location,
+                                  zoom: Constants.zoom,
+                                ),
+                                zoomControlsEnabled: false,
+                                myLocationButtonEnabled: false,
+                                markers: _createMarkers(),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          FilledButton(
+                            onPressed: () => getLocation(),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  Constants.buttonRadius,
+                                ),
+                              ),
+                              minimumSize: const Size(double.infinity, 52),
+                            ),
+                            child: BlocBuilder<LocationCubit, LocationState>(
+                              builder: (context, state) {
+                                if (state is LocationLoading) {
+                                  return const CupertinoActivityIndicator(
+                                    color: Colors.white,
+                                  );
+                                } else {
+                                  return const Text(
+                                    "Refresh",
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

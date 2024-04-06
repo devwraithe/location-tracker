@@ -20,8 +20,8 @@ class LocationRepositoryImpl implements LocationRepository {
   @override
   Future<Either<Failure, LocationEntity>> getLocation() async {
     try {
-      final permission = await locationService.locationPermissions();
-      // const permission = LocationPermission.deniedForever;
+      // final permission = await locationService.locationPermissions();
+      const permission = LocationPermission.deniedForever;
       if (permission == LocationPermission.always ||
           permission == LocationPermission.whileInUse) {
         final currentLocation = await locationService.getCurrentLocation();
