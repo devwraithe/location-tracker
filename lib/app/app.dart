@@ -13,10 +13,13 @@ class LocationTracker extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => sl<LocationCubit>()),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         title: 'Location Tracker',
         debugShowCheckedModeBanner: false,
-        home: CurrentLocationScreen(),
+        theme: ThemeData(
+          fontFamily: 'Manrope',
+        ),
+        home: const CurrentLocationScreen(),
       ),
     );
   }
