@@ -1,61 +1,44 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location_tracker/app/shared/errors/failure.dart';
+import 'package:location_tracker/app/shared/services/permissions_service.dart';
 import 'package:location_tracker/app/shared/utilities/constants.dart';
 
+import '../errors/exceptions.dart';
+
 abstract class LocationService {
-  Future<LocationPermission> locationPermissions();
   Future<Position> getCurrentLocation();
 }
 
 class LocationServiceImpl implements LocationService {
-  @override
-  Future<LocationPermission> locationPermissions() async {
-    bool locationServiceEnabled;
-    LocationPermission permission;
+  final PermissionService permissionService;
 
-    try {
-      locationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-
-      if (!locationServiceEnabled) {
-        throw Exception("Location services are not enabled");
-      } else {
-        permission = await Geolocator.checkPermission();
-        return permission;
-      }
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
+  LocationServiceImpl(this.permissionService);
 
   @override
   Future<Position> getCurrentLocation() async {
-    bool locationServiceEnabled;
-    LocationPermission permission;
-
     try {
-      locationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-
-      if (!locationServiceEnabled) {
-        return Future.error(Constants.permissionsDisabled);
-      }
-
-      permission = await Geolocator.checkPermission();
+      // Check location permission before attempting to get the current location
+      LocationPermission permission = await permissionService.checkPermission();
 
       if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
+        // Request permission if it's not granted
+        permission = await permissionService.requestPermission();
 
         if (permission == LocationPermission.denied) {
-          return Future.error(Constants.permissionsDenied);
+          // Handle the case when permission is denied
+          throw const PermissionException(
+            Failure(Constants.permissionsDenied),
+          );
         }
       }
 
-      if (permission == LocationPermission.deniedForever) {
-        return Future.error(Constants.permissionsDeniedPermanently);
-      }
-
+      // Fetch current position after obtaining permission
       return await Geolocator.getCurrentPosition();
     } catch (e) {
+      debugPrint("Exception thrown from here");
       throw Exception(e.toString());
     }
   }

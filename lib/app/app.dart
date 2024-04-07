@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/cubits/cubit.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/screens/current_location_screen.dart';
 import 'package:location_tracker/app/shared/services/di_service.dart';
+import 'package:location_tracker/app/shared/utilities/constants.dart';
 
 class LocationTracker extends StatelessWidget {
   const LocationTracker({super.key});
@@ -17,7 +18,7 @@ class LocationTracker extends StatelessWidget {
         title: 'Location Tracker',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          fontFamily: 'Manrope',
+          fontFamily: Constants.fontFamily,
         ),
         home: const CurrentLocationScreen(),
       ),

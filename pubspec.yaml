@@ -21,6 +21,7 @@ dependencies:
   get_it: ^7.6.7
   google_maps_flutter: ^2.5.3
   shimmer: ^3.0.0
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:
