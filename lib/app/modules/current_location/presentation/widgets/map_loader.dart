@@ -7,10 +7,7 @@ class MapLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Shimmer.fromColors(
+    return Shimmer.fromColors(
             baseColor: Colors.grey[200]!,
             highlightColor: Colors.grey[400]!,
             child: Container(
@@ -22,24 +19,6 @@ class MapLoader extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        Shimmer.fromColors(
-          baseColor: Colors.grey[200]!,
-          highlightColor: Colors.grey[400]!,
-          child: Container(
-            height: 52,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.circular(
-                Constants.buttonRadius,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+          );
   }
 }

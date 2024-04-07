@@ -39,7 +39,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
+          padding: const EdgeInsets.all(18),
           child: Column(
             children: [
               const Text(
@@ -62,6 +62,14 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
                       );
                       _updateCameraPosition();
                     }
+                    if (state is LocationError) {
+                      final snackBar = SnackBar(
+                        content: Text(state.message),
+                        duration: const Duration(seconds: 3),
+                      );
+
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
                   },
                   builder: (context, state) {
                     if (state is LocationLoading) {
@@ -83,39 +91,9 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
                                   zoom: Constants.zoom,
                                 ),
                                 zoomControlsEnabled: false,
-                                myLocationButtonEnabled: false,
+                                myLocationEnabled: false,
                                 markers: _createMarkers(),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          FilledButton(
-                            onPressed: () => getLocation(),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  Constants.buttonRadius,
-                                ),
-                              ),
-                              minimumSize: const Size(double.infinity, 52),
-                            ),
-                            child: BlocBuilder<LocationCubit, LocationState>(
-                              builder: (context, state) {
-                                if (state is LocationLoading) {
-                                  return const CupertinoActivityIndicator(
-                                    color: Colors.white,
-                                  );
-                                } else {
-                                  return const Text(
-                                    "Refresh",
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  );
-                                }
-                              },
                             ),
                           ),
                         ],
@@ -123,6 +101,40 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
                     }
                   },
                 ),
+              ),
+              const SizedBox(height: 24),
+              BlocBuilder<LocationCubit, LocationState>(
+                builder: (context, state) {
+                  return FilledButton(
+                    onPressed: () {
+                      if (state is! LocationLoading) {
+                        getLocation();
+                      }
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: state is LocationLoading
+                          ? Colors.grey[400]
+                          : Colors.redAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          Constants.buttonRadius,
+                        ),
+                      ),
+                      minimumSize: const Size(double.infinity, 52),
+                    ),
+                    child: state is LocationLoading
+                        ? const CupertinoActivityIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            "Refresh",
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                  );
+                },
               ),
             ],
           ),

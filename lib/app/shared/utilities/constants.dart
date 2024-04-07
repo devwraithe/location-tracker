@@ -1,5 +1,6 @@
 class Constants {
   // Strings
+  static const String fontFamily = "Manrope";
   static const String serverError = "Error fetching location info";
   static const String noConnection = "No internet connection";
   static const String connectionTimeout = "Connection timeout";

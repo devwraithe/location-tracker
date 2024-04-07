@@ -40,3 +40,11 @@ class CacheException extends Equatable implements Exception {
   @override
   List<Object?> get props => [failure];
 }
+
+// Local datasource exceptions
+class PermissionException extends Equatable implements Exception {
+  final Failure failure;
+  const PermissionException(this.failure);
+  @override
+  List<Object?> get props => [failure];
+}

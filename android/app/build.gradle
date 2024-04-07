@@ -5,6 +5,14 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+
+
+def envVariables = [
+        MAPS_API_KEY: project.hasProperty('MAPS_API_KEY')
+                ? MAPS_API_KEY
+                : null,
+];
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -22,12 +30,6 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
-
-def envVariables = [
-        APP_NAME: project.hasProperty('MAPS_API_KEY')
-                ? MAPS_API_KEY
-                : null,
-];
 
 
 android {
@@ -57,6 +59,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
         resValue "string", "googleMapApiKey", envVariables.MAPS_API_KEY
     }
 
