@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/cubits/cubit.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/cubits/state.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/widgets/map_loader.dart';
+import 'package:location_tracker/app/shared/utilities/responsive.dart';
 
 import '../../../../shared/utilities/constants.dart';
 
@@ -36,21 +37,23 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = Responsive.isMobile;
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(18),
+          padding: EdgeInsets.all(isMobile ? 18 : 28),
           child: Column(
             children: [
-              const Text(
+              Text(
                 "Find your location!",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: Responsive.headlineMedium,
                   fontWeight: FontWeight.w800,
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: isMobile ? 24 : 32),
               Expanded(
                 child: BlocConsumer<LocationCubit, LocationState>(
                   listener: (context, state) {
@@ -92,6 +95,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
                                 ),
                                 zoomControlsEnabled: false,
                                 myLocationEnabled: false,
+                                myLocationButtonEnabled: false,
                                 markers: _createMarkers(),
                               ),
                             ),
@@ -102,7 +106,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
                   },
                 ),
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: isMobile ? 24 : 36),
               BlocBuilder<LocationCubit, LocationState>(
                 builder: (context, state) {
                   return FilledButton(
@@ -120,16 +124,19 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
                           Constants.buttonRadius,
                         ),
                       ),
-                      minimumSize: const Size(double.infinity, 52),
+                      minimumSize: Size(
+                        double.infinity,
+                        isMobile ? 52 : 72,
+                      ),
                     ),
                     child: state is LocationLoading
                         ? const CupertinoActivityIndicator(
                             color: Colors.white,
                           )
-                        : const Text(
+                        : Text(
                             "Refresh",
                             style: TextStyle(
-                              fontSize: 16.0,
+                              fontSize: Responsive.bodyLarge,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
