@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/cubits/cubit.dart';
 import 'package:location_tracker/app/modules/current_location/presentation/screens/current_location_screen.dart';
 import 'package:location_tracker/app/shared/services/di_service.dart';
@@ -14,13 +15,22 @@ class LocationTracker extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => sl<LocationCubit>()),
       ],
-      child: MaterialApp(
-        title: 'Location Tracker',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: Constants.fontFamily,
-        ),
-        home: const CurrentLocationScreen(),
+      child: ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          ScreenUtil.init(context);
+          return MaterialApp(
+            title: 'Location Tracker',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              fontFamily: Constants.fontFamily,
+            ),
+            home: const CurrentLocationScreen(),
+          );
+        },
+        child: const CurrentLocationScreen(),
       ),
     );
   }
