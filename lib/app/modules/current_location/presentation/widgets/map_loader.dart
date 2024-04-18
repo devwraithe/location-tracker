@@ -8,17 +8,17 @@ class MapLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-            baseColor: Colors.grey[200]!,
-            highlightColor: Colors.grey[400]!,
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(
-                  Constants.mapRadius,
-                ),
-              ),
-            ),
-          );
+      baseColor: Colors.grey[200]!,
+      highlightColor: Colors.grey[400]!,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.circular(
+            Constants.mapRadius,
+          ),
+        ),
+      ),
+    );
   }
 }
