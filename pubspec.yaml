@@ -23,6 +23,8 @@ dependencies:
   shimmer: ^3.0.0
   connectivity_plus: ^5.0.2
   flutter_screenutil: ^5.9.0
+  mockito: ^5.4.4
+  build_runner: ^2.4.9
 
 dev_dependencies:
   flutter_test:
