@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location_tracker/app/modules/current_location/data/datasources/local_datasource.dart';
 import 'package:location_tracker/app/modules/current_location/data/datasources/remote_datasource.dart';
 
 import '../../../shared/errors/exceptions.dart';
@@ -13,12 +14,56 @@ class LocationRepositoryImpl implements LocationRepository {
   final RemoteDatasource remoteDatasource;
   final LocationService locationService;
   final ConnectivityService connectivityService;
+  final LocalDatasource localDatasource;
 
   LocationRepositoryImpl(
     this.remoteDatasource,
     this.locationService,
     this.connectivityService,
+    this.localDatasource,
   );
+
+  Future<Either<Failure, LocationEntity>> _getRemoteLocation() async {
+    try {
+      final response = await remoteDatasource.fetchLocationInfo();
+      final locationEntity = response.toEntity();
+      await localDatasource.cacheLocation(locationEntity);
+      return Right(locationEntity);
+    } on ServerException catch (e) {
+      return Left(e.failure);
+    } on NetworkException catch (e) {
+      return Left(e.failure);
+    }
+  }
+
+  Future<Either<Failure, LocationEntity>> _getCachedLocation() async {
+    try {
+      final cache = await localDatasource.offlineLocation();
+      final locationEntity = LocationEntity(
+        latitude: cache.latitude,
+        longitude: cache.longitude,
+      );
+      return Right(locationEntity);
+    } on CacheException catch (e) {
+      return Left(e.failure);
+    }
+  }
+
+  Future<Either<Failure, LocationEntity>> _getGpsLocation() async {
+    try {
+      final gps = await locationService.getCurrentLocation();
+      final locationEntity = LocationEntity(
+        latitude: gps.latitude,
+        longitude: gps.longitude,
+      );
+      await localDatasource.cacheLocation(locationEntity);
+      return Right(locationEntity);
+    } on PermissionException catch (e) {
+      return Left(e.failure);
+    } on ServerException catch (e) {
+      return Left(e.failure);
+    }
+  }
 
   @override
   Future<Either<Failure, LocationEntity>> getLocation() async {
@@ -26,28 +71,16 @@ class LocationRepositoryImpl implements LocationRepository {
       final isConnected = await connectivityService.isConnected();
       final isGpsEnabled = await Geolocator.isLocationServiceEnabled();
 
-      if (isConnected || !isGpsEnabled) {
-        // If there is internet or GPS is not enabled, use the API
-        final result = await remoteDatasource.fetchLocationInfo();
-        final locationEntity = result.toEntity();
-        return Right(locationEntity);
+      if (isConnected) {
+        // Internet is available, use API
+        return await _getRemoteLocation();
+      } else if (!isConnected && !isGpsEnabled) {
+        // Internet and GPS is not available, use Cache
+        return await _getCachedLocation();
       } else {
-        // If there is no internet or GPS is enabled, use the GPS
-        final currentLocation = await locationService.getCurrentLocation();
-        final locationEntity = LocationEntity(
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-        );
-        return Right(locationEntity);
+        // Neither of the above, use GPS
+        return await _getGpsLocation();
       }
-    } on PermissionException catch (e) {
-      return Left(e.failure);
-    } on ServerException catch (e) {
-      return Left(e.failure);
-    } on NetworkException catch (e) {
-      return Left(e.failure);
-    } on CacheException catch (e) {
-      return Left(e.failure);
     } catch (e) {
       return Left(Failure(e.toString()));
     }

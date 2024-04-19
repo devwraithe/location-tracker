@@ -93,6 +93,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> {
                                   target: _location,
                                   zoom: Constants.zoom,
                                 ),
+                                mapType: MapType.normal,
                                 zoomControlsEnabled: false,
                                 myLocationEnabled: false,
                                 myLocationButtonEnabled: false,
