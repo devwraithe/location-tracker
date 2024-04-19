@@ -9,6 +9,7 @@ class Constants {
   static const String permissionsDenied = "Location permissions are denied";
   static const String permissionsDeniedPermanently =
       "Location permissions are permanently denied";
+  static const String boxName = "location";
 
   // Doubles
   static const double initLat = 43.6532;

@@ -4,12 +4,15 @@ import 'package:http/http.dart' as http;
 import 'package:location_tracker/app/shared/services/location_service.dart';
 import 'package:location_tracker/app/shared/services/permissions_service.dart';
 
+import '../../modules/current_location/data/datasources/local_datasource.dart';
 import '../../modules/current_location/data/datasources/remote_datasource.dart';
 import '../../modules/current_location/data/location_repository_impl.dart';
 import '../../modules/current_location/domain/location_repository.dart';
 import '../../modules/current_location/domain/location_usecase.dart';
 import '../../modules/current_location/presentation/cubits/cubit.dart';
+import 'cache_service.dart';
 import 'connectivity_service.dart';
+import 'hive_service.dart';
 import 'http_service.dart';
 
 // Service locator (sl)
@@ -28,16 +31,19 @@ Future<void> init() async {
 
   // Repositories
   regSingleton<LocationRepository>(
-    () => LocationRepositoryImpl(sl(), sl(), sl()),
+    () => LocationRepositoryImpl(sl(), sl(), sl(), sl()),
   );
 
   // Datasources
   regSingleton<RemoteDatasource>(() => RemoteDatasourceImpl(sl()));
+  regSingleton<LocalDatasource>(() => LocalDatasourceImpl(sl()));
 
   // Services
   regSingleton<HttpService>(() => HttpServiceImpl());
   regSingleton<LocationService>(() => LocationServiceImpl(sl()));
   regSingleton<PermissionService>(() => PermissionServiceImpl());
+  regSingleton<CacheService>(() => CacheServiceImpl(sl()));
+  regSingleton<HiveService>(() => HiveServiceImpl());
   regSingleton<ConnectivityService>(
     () => ConnectivityServiceImpl(Connectivity()),
   );
