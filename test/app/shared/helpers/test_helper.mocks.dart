@@ -3,25 +3,35 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i6;
-import 'dart:convert' as _i11;
-import 'dart:typed_data' as _i13;
+import 'dart:async' as _i8;
+import 'dart:convert' as _i16;
+import 'dart:typed_data' as _i18;
 
-import 'package:connectivity_plus/connectivity_plus.dart' as _i14;
-import 'package:flutter_bloc/flutter_bloc.dart' as _i7;
-import 'package:geolocator/geolocator.dart' as _i3;
-import 'package:http/http.dart' as _i4;
+import 'package:connectivity_plus/connectivity_plus.dart' as _i19;
+import 'package:flutter_bloc/flutter_bloc.dart' as _i9;
+import 'package:geolocator/geolocator.dart' as _i5;
+import 'package:http/http.dart' as _i6;
+import 'package:location_tracker/app/modules/current_location/data/datasources/local_datasource.dart'
+    as _i10;
+import 'package:location_tracker/app/modules/current_location/data/datasources/remote_datasource.dart'
+    as _i11;
+import 'package:location_tracker/app/modules/current_location/data/location_model.dart'
+    as _i4;
+import 'package:location_tracker/app/modules/current_location/domain/location_entity.dart'
+    as _i3;
 import 'package:location_tracker/app/modules/current_location/presentation/cubits/cubit.dart'
-    as _i5;
+    as _i7;
 import 'package:location_tracker/app/modules/current_location/presentation/cubits/state.dart'
     as _i2;
+import 'package:location_tracker/app/shared/services/cache_service.dart'
+    as _i15;
 import 'package:location_tracker/app/shared/services/connectivity_service.dart'
-    as _i8;
-import 'package:location_tracker/app/shared/services/http_service.dart' as _i9;
+    as _i12;
+import 'package:location_tracker/app/shared/services/http_service.dart' as _i13;
 import 'package:location_tracker/app/shared/services/location_service.dart'
-    as _i10;
+    as _i14;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i12;
+import 'package:mockito/src/dummies.dart' as _i17;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -46,8 +56,9 @@ class _FakeLocationState_0 extends _i1.SmartFake implements _i2.LocationState {
         );
 }
 
-class _FakePosition_1 extends _i1.SmartFake implements _i3.Position {
-  _FakePosition_1(
+class _FakeLocationEntity_1 extends _i1.SmartFake
+    implements _i3.LocationEntity {
+  _FakeLocationEntity_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -56,8 +67,8 @@ class _FakePosition_1 extends _i1.SmartFake implements _i3.Position {
         );
 }
 
-class _FakeResponse_2 extends _i1.SmartFake implements _i4.Response {
-  _FakeResponse_2(
+class _FakeLocationModel_2 extends _i1.SmartFake implements _i4.LocationModel {
+  _FakeLocationModel_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -66,9 +77,29 @@ class _FakeResponse_2 extends _i1.SmartFake implements _i4.Response {
         );
 }
 
-class _FakeStreamedResponse_3 extends _i1.SmartFake
-    implements _i4.StreamedResponse {
-  _FakeStreamedResponse_3(
+class _FakePosition_3 extends _i1.SmartFake implements _i5.Position {
+  _FakePosition_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeResponse_4 extends _i1.SmartFake implements _i6.Response {
+  _FakeResponse_4(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeStreamedResponse_5 extends _i1.SmartFake
+    implements _i6.StreamedResponse {
+  _FakeStreamedResponse_5(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -80,7 +111,7 @@ class _FakeStreamedResponse_3 extends _i1.SmartFake
 /// A class which mocks [LocationCubit].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLocationCubit extends _i1.Mock implements _i5.LocationCubit {
+class MockLocationCubit extends _i1.Mock implements _i7.LocationCubit {
   MockLocationCubit() {
     _i1.throwOnMissingStub(this);
   }
@@ -95,10 +126,10 @@ class MockLocationCubit extends _i1.Mock implements _i5.LocationCubit {
       ) as _i2.LocationState);
 
   @override
-  _i6.Stream<_i2.LocationState> get stream => (super.noSuchMethod(
+  _i8.Stream<_i2.LocationState> get stream => (super.noSuchMethod(
         Invocation.getter(#stream),
-        returnValue: _i6.Stream<_i2.LocationState>.empty(),
-      ) as _i6.Stream<_i2.LocationState>);
+        returnValue: _i8.Stream<_i2.LocationState>.empty(),
+      ) as _i8.Stream<_i2.LocationState>);
 
   @override
   bool get isClosed => (super.noSuchMethod(
@@ -107,14 +138,14 @@ class MockLocationCubit extends _i1.Mock implements _i5.LocationCubit {
       ) as bool);
 
   @override
-  _i6.Future<void> getLocation() => (super.noSuchMethod(
+  _i8.Future<void> getLocation() => (super.noSuchMethod(
         Invocation.method(
           #getLocation,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
 
   @override
   void emit(_i2.LocationState? state) => super.noSuchMethod(
@@ -126,7 +157,7 @@ class MockLocationCubit extends _i1.Mock implements _i5.LocationCubit {
       );
 
   @override
-  void onChange(_i7.Change<_i2.LocationState>? change) => super.noSuchMethod(
+  void onChange(_i9.Change<_i2.LocationState>? change) => super.noSuchMethod(
         Invocation.method(
           #onChange,
           [change],
@@ -167,45 +198,131 @@ class MockLocationCubit extends _i1.Mock implements _i5.LocationCubit {
       );
 
   @override
-  _i6.Future<void> close() => (super.noSuchMethod(
+  _i8.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i6.Future<void>.value(),
-        returnValueForMissingStub: _i6.Future<void>.value(),
-      ) as _i6.Future<void>);
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
+}
+
+/// A class which mocks [LocationEntity].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLocationEntity extends _i1.Mock implements _i3.LocationEntity {
+  MockLocationEntity() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  double get latitude => (super.noSuchMethod(
+        Invocation.getter(#latitude),
+        returnValue: 0.0,
+      ) as double);
+
+  @override
+  double get longitude => (super.noSuchMethod(
+        Invocation.getter(#longitude),
+        returnValue: 0.0,
+      ) as double);
+
+  @override
+  List<Object> get props => (super.noSuchMethod(
+        Invocation.getter(#props),
+        returnValue: <Object>[],
+      ) as List<Object>);
+}
+
+/// A class which mocks [LocalDatasource].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLocalDatasource extends _i1.Mock implements _i10.LocalDatasource {
+  MockLocalDatasource() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.Future<void> cacheLocation(_i3.LocationEntity? location) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #cacheLocation,
+          [location],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
+
+  @override
+  _i8.Future<_i3.LocationEntity> offlineLocation() => (super.noSuchMethod(
+        Invocation.method(
+          #offlineLocation,
+          [],
+        ),
+        returnValue: _i8.Future<_i3.LocationEntity>.value(_FakeLocationEntity_1(
+          this,
+          Invocation.method(
+            #offlineLocation,
+            [],
+          ),
+        )),
+      ) as _i8.Future<_i3.LocationEntity>);
+}
+
+/// A class which mocks [RemoteDatasource].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockRemoteDatasource extends _i1.Mock implements _i11.RemoteDatasource {
+  MockRemoteDatasource() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.Future<_i4.LocationModel> fetchLocationInfo() => (super.noSuchMethod(
+        Invocation.method(
+          #fetchLocationInfo,
+          [],
+        ),
+        returnValue: _i8.Future<_i4.LocationModel>.value(_FakeLocationModel_2(
+          this,
+          Invocation.method(
+            #fetchLocationInfo,
+            [],
+          ),
+        )),
+      ) as _i8.Future<_i4.LocationModel>);
 }
 
 /// A class which mocks [ConnectivityService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockConnectivityService extends _i1.Mock
-    implements _i8.ConnectivityService {
+    implements _i12.ConnectivityService {
   MockConnectivityService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<bool> isConnected() => (super.noSuchMethod(
+  _i8.Future<bool> isConnected() => (super.noSuchMethod(
         Invocation.method(
           #isConnected,
           [],
         ),
-        returnValue: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
+        returnValue: _i8.Future<bool>.value(false),
+      ) as _i8.Future<bool>);
 }
 
 /// A class which mocks [HttpService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockHttpService extends _i1.Mock implements _i9.HttpService {
+class MockHttpService extends _i1.Mock implements _i13.HttpService {
   MockHttpService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<Map<String, dynamic>> getRequest(
+  _i8.Future<Map<String, dynamic>> getRequest(
     String? url, {
     Map<String, String>? headers,
     required String? errorMessage,
@@ -220,44 +337,79 @@ class MockHttpService extends _i1.Mock implements _i9.HttpService {
           },
         ),
         returnValue:
-            _i6.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i6.Future<Map<String, dynamic>>);
+            _i8.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+      ) as _i8.Future<Map<String, dynamic>>);
 }
 
 /// A class which mocks [LocationService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLocationService extends _i1.Mock implements _i10.LocationService {
+class MockLocationService extends _i1.Mock implements _i14.LocationService {
   MockLocationService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i3.Position> getCurrentLocation() => (super.noSuchMethod(
+  _i8.Future<_i5.Position> getCurrentLocation() => (super.noSuchMethod(
         Invocation.method(
           #getCurrentLocation,
           [],
         ),
-        returnValue: _i6.Future<_i3.Position>.value(_FakePosition_1(
+        returnValue: _i8.Future<_i5.Position>.value(_FakePosition_3(
           this,
           Invocation.method(
             #getCurrentLocation,
             [],
           ),
         )),
-      ) as _i6.Future<_i3.Position>);
+      ) as _i8.Future<_i5.Position>);
+}
+
+/// A class which mocks [CacheService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockCacheService extends _i1.Mock implements _i15.CacheService {
+  MockCacheService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i8.Future<void> cacheRequest(
+    String? boxName,
+    _i3.LocationEntity? location,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #cacheRequest,
+          [
+            boxName,
+            location,
+          ],
+        ),
+        returnValue: _i8.Future<void>.value(),
+        returnValueForMissingStub: _i8.Future<void>.value(),
+      ) as _i8.Future<void>);
+
+  @override
+  _i8.Future<dynamic> getRequest(String? boxName) => (super.noSuchMethod(
+        Invocation.method(
+          #getRequest,
+          [boxName],
+        ),
+        returnValue: _i8.Future<dynamic>.value(),
+      ) as _i8.Future<dynamic>);
 }
 
 /// A class which mocks [Client].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockClient extends _i1.Mock implements _i4.Client {
+class MockClient extends _i1.Mock implements _i6.Client {
   MockClient() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Future<_i4.Response> head(
+  _i8.Future<_i6.Response> head(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -267,7 +419,7 @@ class MockClient extends _i1.Mock implements _i4.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i6.Future<_i4.Response>.value(_FakeResponse_2(
+        returnValue: _i8.Future<_i6.Response>.value(_FakeResponse_4(
           this,
           Invocation.method(
             #head,
@@ -275,10 +427,10 @@ class MockClient extends _i1.Mock implements _i4.Client {
             {#headers: headers},
           ),
         )),
-      ) as _i6.Future<_i4.Response>);
+      ) as _i8.Future<_i6.Response>);
 
   @override
-  _i6.Future<_i4.Response> get(
+  _i8.Future<_i6.Response> get(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -288,7 +440,7 @@ class MockClient extends _i1.Mock implements _i4.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i6.Future<_i4.Response>.value(_FakeResponse_2(
+        returnValue: _i8.Future<_i6.Response>.value(_FakeResponse_4(
           this,
           Invocation.method(
             #get,
@@ -296,14 +448,14 @@ class MockClient extends _i1.Mock implements _i4.Client {
             {#headers: headers},
           ),
         )),
-      ) as _i6.Future<_i4.Response>);
+      ) as _i8.Future<_i6.Response>);
 
   @override
-  _i6.Future<_i4.Response> post(
+  _i8.Future<_i6.Response> post(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -315,7 +467,7 @@ class MockClient extends _i1.Mock implements _i4.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i6.Future<_i4.Response>.value(_FakeResponse_2(
+        returnValue: _i8.Future<_i6.Response>.value(_FakeResponse_4(
           this,
           Invocation.method(
             #post,
@@ -327,14 +479,14 @@ class MockClient extends _i1.Mock implements _i4.Client {
             },
           ),
         )),
-      ) as _i6.Future<_i4.Response>);
+      ) as _i8.Future<_i6.Response>);
 
   @override
-  _i6.Future<_i4.Response> put(
+  _i8.Future<_i6.Response> put(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -346,7 +498,7 @@ class MockClient extends _i1.Mock implements _i4.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i6.Future<_i4.Response>.value(_FakeResponse_2(
+        returnValue: _i8.Future<_i6.Response>.value(_FakeResponse_4(
           this,
           Invocation.method(
             #put,
@@ -358,14 +510,14 @@ class MockClient extends _i1.Mock implements _i4.Client {
             },
           ),
         )),
-      ) as _i6.Future<_i4.Response>);
+      ) as _i8.Future<_i6.Response>);
 
   @override
-  _i6.Future<_i4.Response> patch(
+  _i8.Future<_i6.Response> patch(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -377,7 +529,7 @@ class MockClient extends _i1.Mock implements _i4.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i6.Future<_i4.Response>.value(_FakeResponse_2(
+        returnValue: _i8.Future<_i6.Response>.value(_FakeResponse_4(
           this,
           Invocation.method(
             #patch,
@@ -389,14 +541,14 @@ class MockClient extends _i1.Mock implements _i4.Client {
             },
           ),
         )),
-      ) as _i6.Future<_i4.Response>);
+      ) as _i8.Future<_i6.Response>);
 
   @override
-  _i6.Future<_i4.Response> delete(
+  _i8.Future<_i6.Response> delete(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
-    _i11.Encoding? encoding,
+    _i16.Encoding? encoding,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -408,7 +560,7 @@ class MockClient extends _i1.Mock implements _i4.Client {
             #encoding: encoding,
           },
         ),
-        returnValue: _i6.Future<_i4.Response>.value(_FakeResponse_2(
+        returnValue: _i8.Future<_i6.Response>.value(_FakeResponse_4(
           this,
           Invocation.method(
             #delete,
@@ -420,10 +572,10 @@ class MockClient extends _i1.Mock implements _i4.Client {
             },
           ),
         )),
-      ) as _i6.Future<_i4.Response>);
+      ) as _i8.Future<_i6.Response>);
 
   @override
-  _i6.Future<String> read(
+  _i8.Future<String> read(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -433,7 +585,7 @@ class MockClient extends _i1.Mock implements _i4.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i6.Future<String>.value(_i12.dummyValue<String>(
+        returnValue: _i8.Future<String>.value(_i17.dummyValue<String>(
           this,
           Invocation.method(
             #read,
@@ -441,10 +593,10 @@ class MockClient extends _i1.Mock implements _i4.Client {
             {#headers: headers},
           ),
         )),
-      ) as _i6.Future<String>);
+      ) as _i8.Future<String>);
 
   @override
-  _i6.Future<_i13.Uint8List> readBytes(
+  _i8.Future<_i18.Uint8List> readBytes(
     Uri? url, {
     Map<String, String>? headers,
   }) =>
@@ -454,25 +606,25 @@ class MockClient extends _i1.Mock implements _i4.Client {
           [url],
           {#headers: headers},
         ),
-        returnValue: _i6.Future<_i13.Uint8List>.value(_i13.Uint8List(0)),
-      ) as _i6.Future<_i13.Uint8List>);
+        returnValue: _i8.Future<_i18.Uint8List>.value(_i18.Uint8List(0)),
+      ) as _i8.Future<_i18.Uint8List>);
 
   @override
-  _i6.Future<_i4.StreamedResponse> send(_i4.BaseRequest? request) =>
+  _i8.Future<_i6.StreamedResponse> send(_i6.BaseRequest? request) =>
       (super.noSuchMethod(
         Invocation.method(
           #send,
           [request],
         ),
         returnValue:
-            _i6.Future<_i4.StreamedResponse>.value(_FakeStreamedResponse_3(
+            _i8.Future<_i6.StreamedResponse>.value(_FakeStreamedResponse_5(
           this,
           Invocation.method(
             #send,
             [request],
           ),
         )),
-      ) as _i6.Future<_i4.StreamedResponse>);
+      ) as _i8.Future<_i6.StreamedResponse>);
 
   @override
   void close() => super.noSuchMethod(
@@ -487,26 +639,26 @@ class MockClient extends _i1.Mock implements _i4.Client {
 /// A class which mocks [Connectivity].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockConnectivity extends _i1.Mock implements _i14.Connectivity {
+class MockConnectivity extends _i1.Mock implements _i19.Connectivity {
   MockConnectivity() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i6.Stream<_i14.ConnectivityResult> get onConnectivityChanged =>
+  _i8.Stream<_i19.ConnectivityResult> get onConnectivityChanged =>
       (super.noSuchMethod(
         Invocation.getter(#onConnectivityChanged),
-        returnValue: _i6.Stream<_i14.ConnectivityResult>.empty(),
-      ) as _i6.Stream<_i14.ConnectivityResult>);
+        returnValue: _i8.Stream<_i19.ConnectivityResult>.empty(),
+      ) as _i8.Stream<_i19.ConnectivityResult>);
 
   @override
-  _i6.Future<_i14.ConnectivityResult> checkConnectivity() =>
+  _i8.Future<_i19.ConnectivityResult> checkConnectivity() =>
       (super.noSuchMethod(
         Invocation.method(
           #checkConnectivity,
           [],
         ),
-        returnValue: _i6.Future<_i14.ConnectivityResult>.value(
-            _i14.ConnectivityResult.bluetooth),
-      ) as _i6.Future<_i14.ConnectivityResult>);
+        returnValue: _i8.Future<_i19.ConnectivityResult>.value(
+            _i19.ConnectivityResult.bluetooth),
+      ) as _i8.Future<_i19.ConnectivityResult>);
 }
