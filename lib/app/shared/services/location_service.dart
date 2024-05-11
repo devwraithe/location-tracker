@@ -10,6 +10,7 @@ import '../errors/exceptions.dart';
 
 abstract class LocationService {
   Future<Position> getCurrentLocation();
+  Future<bool> isLocationEnabled();
 }
 
 class LocationServiceImpl implements LocationService {
@@ -38,7 +39,15 @@ class LocationServiceImpl implements LocationService {
       // Fetch current position after obtaining permission
       return await Geolocator.getCurrentPosition();
     } catch (e) {
-      debugPrint("Exception thrown from here");
+      throw Exception(e.toString());
+    }
+  }
+
+  @override
+  Future<bool> isLocationEnabled() async {
+    try {
+      return await Geolocator.isLocationServiceEnabled();
+    } catch (e) {
       throw Exception(e.toString());
     }
   }

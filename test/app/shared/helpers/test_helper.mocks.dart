@@ -434,6 +434,15 @@ class MockLocationService extends _i1.Mock implements _i18.LocationService {
           ),
         )),
       ) as _i9.Future<_i6.Position>);
+
+  @override
+  _i9.Future<bool> isLocationEnabled() => (super.noSuchMethod(
+        Invocation.method(
+          #isLocationEnabled,
+          [],
+        ),
+        returnValue: _i9.Future<bool>.value(false),
+      ) as _i9.Future<bool>);
 }
 
 /// A class which mocks [CacheService].
