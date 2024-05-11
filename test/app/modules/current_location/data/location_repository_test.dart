@@ -13,21 +13,19 @@ import 'package:mockito/mockito.dart';
 import '../../../shared/helpers/test_helper.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late MockConnectivityService mockConnectivityService;
   late MockLocationService mockLocationService;
-
   late MockRemoteDatasource mockRemoteDatasource;
   late MockLocalDatasource mockLocalDatasource;
-
   late LocationRepository repository;
 
   setUp(() {
     mockConnectivityService = MockConnectivityService();
     mockLocationService = MockLocationService();
-
     mockRemoteDatasource = MockRemoteDatasource();
     mockLocalDatasource = MockLocalDatasource();
-
     repository = LocationRepositoryImpl(
       mockRemoteDatasource,
       mockLocationService,
@@ -35,8 +33,6 @@ void main() {
       mockLocalDatasource,
     );
   });
-
-  const String city = 'Melbourne, Australia';
 
   final locationJson = json.encode({
     "latitude": Constants.initLat,
@@ -56,14 +52,19 @@ void main() {
       when(mockRemoteDatasource.fetchLocationInfo()).thenAnswer(
         (_) async => locationModel,
       );
+      when(mockLocationService.isLocationEnabled()).thenAnswer(
+        (_) async => false,
+      );
 
       // Act
       final result = await repository.getLocation();
 
       // Assert
-      expect(result, equals(isA<Right>()));
-      verify(mockRemoteDatasource.fetchLocationInfo()).called(1);
-      verify(mockLocalDatasource.cacheLocation(locationEntity)).called(1);
+      expect(result, Right(locationEntity));
+      verify(mockRemoteDatasource.fetchLocationInfo());
+      verify(mockLocalDatasource.cacheLocation(locationEntity));
+      verifyNever(mockLocationService.getCurrentLocation());
+      verifyNever(mockLocalDatasource.offlineLocation());
     },
   );
 
@@ -77,13 +78,16 @@ void main() {
       when(mockLocalDatasource.offlineLocation()).thenAnswer(
         (_) async => locationEntity,
       );
+      when(mockLocationService.isLocationEnabled()).thenAnswer(
+        (_) async => false,
+      );
 
       // Act
       final result = await repository.getLocation();
 
       // Assert
-      expect(result, equals(isA<Right>()));
-      verify(mockLocalDatasource.offlineLocation()).called(1);
+      expect(result, Right(locationEntity));
+      verify(mockLocalDatasource.offlineLocation());
     },
   );
 
@@ -91,9 +95,14 @@ void main() {
     'Should return ServerException when api error occurs',
     () async {
       // Arrange
-      when(mockConnectivityService.isConnected()).thenAnswer((_) async => true);
+      when(mockConnectivityService.isConnected()).thenAnswer(
+        (_) async => true,
+      );
       when(mockRemoteDatasource.fetchLocationInfo()).thenThrow(
         const ServerException(Failure(Constants.serverError)),
+      );
+      when(mockLocationService.isLocationEnabled()).thenAnswer(
+        (_) async => false,
       );
 
       // Act
@@ -109,9 +118,14 @@ void main() {
     'Should return NetworkException when caching error occurs',
     () async {
       // Arrange
-      when(mockConnectivityService.isConnected()).thenAnswer((_) async => true);
+      when(mockConnectivityService.isConnected()).thenAnswer(
+        (_) async => true,
+      );
       when(mockRemoteDatasource.fetchLocationInfo()).thenThrow(
         const NetworkException(Failure(Constants.noConnection)),
+      );
+      when(mockLocationService.isLocationEnabled()).thenAnswer(
+        (_) async => false,
       );
 
       // Act
@@ -127,9 +141,14 @@ void main() {
     'Should return CacheException when caching error occurs',
     () async {
       // Arrange
-      when(mockConnectivityService.isConnected()).thenAnswer((_) async => true);
+      when(mockConnectivityService.isConnected()).thenAnswer(
+        (_) async => true,
+      );
       when(mockRemoteDatasource.fetchLocationInfo()).thenThrow(
         const CacheException(Failure("Cache error")),
+      );
+      when(mockLocationService.isLocationEnabled()).thenAnswer(
+        (_) async => false,
       );
 
       // Act
@@ -150,6 +169,9 @@ void main() {
       );
       when(mockLocalDatasource.offlineLocation()).thenThrow(
         const Left(Failure("Offline error")),
+      );
+      when(mockLocationService.isLocationEnabled()).thenAnswer(
+        (_) async => false,
       );
 
       // Act

@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:location_tracker/app/modules/current_location/data/datasources/local_datasource.dart';
 import 'package:location_tracker/app/modules/current_location/data/datasources/remote_datasource.dart';
 
@@ -23,7 +22,7 @@ class LocationRepositoryImpl implements LocationRepository {
     this.localDatasource,
   );
 
-  Future<Either<Failure, LocationEntity>> _getRemoteLocation() async {
+  Future<Either<Failure, LocationEntity>> getRemoteLocation() async {
     try {
       final response = await remoteDatasource.fetchLocationInfo();
       final locationEntity = response.toEntity();
@@ -36,7 +35,7 @@ class LocationRepositoryImpl implements LocationRepository {
     }
   }
 
-  Future<Either<Failure, LocationEntity>> _getCachedLocation() async {
+  Future<Either<Failure, LocationEntity>> getCachedLocation() async {
     try {
       final cache = await localDatasource.offlineLocation();
       final locationEntity = LocationEntity(
@@ -49,7 +48,7 @@ class LocationRepositoryImpl implements LocationRepository {
     }
   }
 
-  Future<Either<Failure, LocationEntity>> _getGpsLocation() async {
+  Future<Either<Failure, LocationEntity>> getGpsLocation() async {
     try {
       final gps = await locationService.getCurrentLocation();
       final locationEntity = LocationEntity(
@@ -69,17 +68,17 @@ class LocationRepositoryImpl implements LocationRepository {
   Future<Either<Failure, LocationEntity>> getLocation() async {
     try {
       final isConnected = await connectivityService.isConnected();
-      final isGpsEnabled = await Geolocator.isLocationServiceEnabled();
+      final isGpsEnabled = await locationService.isLocationEnabled();
 
       if (isConnected) {
         // Internet is available, use API
-        return await _getRemoteLocation();
+        return await getRemoteLocation();
       } else if (!isConnected && !isGpsEnabled) {
         // Internet and GPS is not available, use Cache
-        return await _getCachedLocation();
+        return await getCachedLocation();
       } else {
         // Neither of the above, use GPS
-        return await _getGpsLocation();
+        return await getGpsLocation();
       }
     } catch (e) {
       return Left(Failure(e.toString()));
