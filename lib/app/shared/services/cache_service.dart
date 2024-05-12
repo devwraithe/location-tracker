@@ -16,14 +16,11 @@ class CacheServiceImpl implements CacheService {
   const CacheServiceImpl(this.hiveService);
 
   @override
-  Future<void> cacheRequest(
-    String boxName,
-    dynamic data,
-  ) async {
+  Future<void> cacheRequest(String boxName, LocationEntity location) async {
     final storage = await hiveService.openBox(boxName);
 
     try {
-      await storage.put("location", data);
+      await storage.put("location", location);
       debugPrint("Location information cached!");
     } on HiveError catch (e) {
       debugPrint("Hive error occurred: $e");

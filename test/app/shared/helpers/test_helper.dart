@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:location_tracker/app/modules/current_location/data/datasources/local_datasource.dart';
 import 'package:location_tracker/app/modules/current_location/data/datasources/remote_datasource.dart';
@@ -8,6 +9,7 @@ import 'package:location_tracker/app/modules/current_location/domain/location_us
 import 'package:location_tracker/app/modules/current_location/presentation/cubits/cubit.dart';
 import 'package:location_tracker/app/shared/services/cache_service.dart';
 import 'package:location_tracker/app/shared/services/connectivity_service.dart';
+import 'package:location_tracker/app/shared/services/hive_service.dart';
 import 'package:location_tracker/app/shared/services/http_service.dart';
 import 'package:location_tracker/app/shared/services/location_service.dart';
 import 'package:mockito/annotations.dart';
@@ -34,9 +36,12 @@ import 'package:mockito/annotations.dart';
   HttpService,
   LocationService,
   CacheService,
+  HiveService,
 
   // Misc
   Client,
   Connectivity,
+  Box,
+  HiveInterface,
 ])
 void main() {}

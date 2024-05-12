@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:location_tracker/app/shared/errors/failure.dart';
 
 import '../errors/exceptions.dart';
@@ -17,7 +17,9 @@ abstract class HttpService {
 }
 
 class HttpServiceImpl implements HttpService {
-  final client = HttpClient();
+  final Client client;
+
+  const HttpServiceImpl(this.client);
 
   @override
   Future<Map<String, dynamic>> getRequest(
@@ -26,7 +28,7 @@ class HttpServiceImpl implements HttpService {
     required String errorMessage,
   }) async {
     try {
-      final response = await http.get(
+      final response = await client.get(
         Uri.parse(url),
         headers: headers,
       );
@@ -40,7 +42,7 @@ class HttpServiceImpl implements HttpService {
       throw const NetworkException(Failure(Constants.noConnection));
     } on TimeoutException {
       throw const NetworkException(Failure(Constants.connectionTimeout));
-    } on http.ClientException catch (e) {
+    } on ClientException catch (e) {
       throw NetworkException(Failure(e.message));
     } on ServerException catch (_) {
       rethrow;
