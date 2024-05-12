@@ -37,4 +37,37 @@ void main() {
     // Assert
     expect(props, contains(failure));
   });
+  test('props should contain the provided failure', () {
+    // Arrange
+    const failure = Failure('Test message');
+    const exception = HttpException(failure);
+
+    // Act
+    final props = exception.props;
+
+    // Assert
+    expect(props, contains(failure));
+  });
+  test('props should contain the provided failure', () {
+    // Arrange
+    const failure = Failure('Test message');
+    const exception = NoConnectionException(failure);
+
+    // Act
+    final props = exception.props;
+
+    // Assert
+    expect(props, contains(failure));
+  });
+  test('props should contain the provided failure', () {
+    // Arrange
+    const failure = Failure('Test message');
+    const exception = PermissionException(failure);
+
+    // Act
+    final props = exception.props;
+
+    // Assert
+    expect(props, contains(failure));
+  });
 }
