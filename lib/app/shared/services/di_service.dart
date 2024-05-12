@@ -39,7 +39,7 @@ Future<void> init() async {
   regSingleton<LocalDatasource>(() => LocalDatasourceImpl(sl()));
 
   // Services
-  regSingleton<HttpService>(() => HttpServiceImpl());
+  regSingleton<HttpService>(() => HttpServiceImpl(sl()));
   regSingleton<LocationService>(() => LocationServiceImpl(sl()));
   regSingleton<PermissionService>(() => PermissionServiceImpl());
   regSingleton<CacheService>(() => CacheServiceImpl(sl()));
